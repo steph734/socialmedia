@@ -6,7 +6,7 @@ import 'package:socialmedia_clone/views/infoheader.dart';
 import 'package:socialmedia_clone/views/mainheader.dart';
 
 class Socialmedia extends StatefulWidget {
-  const Socialmedia({super.key});
+  const Socialmedia({super.key, required Userdata userdata, required username});
 
   @override
   State<Socialmedia> createState() => _SocialmediaState();
@@ -26,7 +26,7 @@ class _SocialmediaState extends State<Socialmedia> {
       body: ListView(
         shrinkWrap: true,
         children: [
-          Mainheader(userdata: userdata),
+          Mainheader(userdata: userdata, username: ''),
           Infoheader(userdata: userdata),
           Friendlist(userdata: userdata),
           const SizedBox(height: 20),

@@ -5,7 +5,6 @@ import '../model/usercomment.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key, required this.userPost});
-
   final Userpost userPost;
 
   @override
@@ -14,206 +13,100 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final Userdata userdata = Userdata();
-
   final TextEditingController _commentController = TextEditingController();
   bool _showCommentBox = false;
 
   // text styles
   final nametxtStyle = const TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-  );
-  final boldtxtStyle = const TextStyle(fontWeight: FontWeight.bold);
-  final boldtxtStyle1 = const TextStyle(
-    fontWeight: FontWeight.bold,
     fontSize: 16,
+    fontWeight: FontWeight.bold,
   );
 
-  // buttons for each comment
-  Widget commentBtn(Usercomment usercomment) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  // Post header
+  Widget postHeader(Userpost post) => ListTile(
+    leading: CircleAvatar(backgroundImage: AssetImage(post.userimg)),
+    title: Text(post.username, style: nametxtStyle),
+    subtitle: Text(post.time, style: const TextStyle(fontSize: 12)),
+    trailing: const Icon(Icons.more_vert),
+  );
+
+  // Post image
+  Widget postImage(Userpost post) => Image.asset(
+    post.postimg,
+    width: double.infinity,
+    height: 400,
+    fit: BoxFit.cover,
+  );
+
+  // Post action buttons
+  Widget actionButtons(Userpost post) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
     child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(usercomment.commentTime),
-        const SizedBox(width: 15),
-        const Text('Like'),
-        const SizedBox(width: 15),
-        const Text('Reply'),
-      ],
-    ),
-  );
-
-  // comment description
-  Widget commentDesc(Usercomment usercomment) => Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(usercomment.commenterName, style: boldtxtStyle),
-        const SizedBox(height: 5),
-        Text(usercomment.commentContent),
-      ],
-    ),
-  );
-
-  // comment container
-  Widget commentSpace(Usercomment usercomment) => Container(
-    decoration: const BoxDecoration(
-      color: Color.fromARGB(35, 158, 158, 158),
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-    ),
-    child: commentDesc(usercomment),
-  );
-
-  // commenter profile pic
-  Widget commenterPic(Usercomment usercomment) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 10),
-    child: CircleAvatar(
-      backgroundImage: AssetImage(usercomment.commenterImg),
-      radius: 20,
-    ),
-  );
-
-  // layout for each comment
-  Widget usercommenterline(Usercomment usercomment) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      commenterPic(usercomment),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [commentSpace(usercomment), commentBtn(usercomment)],
-      ),
-    ],
-  );
-
-  Widget userpostdetails(Usercomment usercomment) => Padding(
-    padding: const EdgeInsets.only(top: 15),
-    child: usercommenterline(usercomment),
-  );
-
-  // post stats & commenters section
-  Widget commenters(Userpost userpost) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Divider(color: Colors.grey),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
+        Row(
           children: [
-            const SizedBox(width: 15),
-            Text(userpost.numshare, style: boldtxtStyle),
-          ],
-        ),
-      ),
-    ],
-  );
-
-  // buttons for post
-  Widget buttons(Userpost userpost) => Column(
-    children: [
-      const Divider(color: Colors.grey),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextButton.icon(
-              style: TextButton.styleFrom(
-                foregroundColor: (userpost.isliked) ? Colors.blue : Colors.grey,
+            IconButton(
+              icon: Icon(
+                Icons.favorite,
+                color: post.isliked ? Colors.red : Colors.grey,
               ),
               onPressed: () {},
-              icon: const Icon(Icons.thumb_up, size: 20),
-              label: const Text('Like'),
             ),
-            TextButton.icon(
-              style: TextButton.styleFrom(foregroundColor: Colors.grey),
+            IconButton(
+              icon: const Icon(Icons.comment_outlined),
               onPressed: () {
                 setState(() {
                   _showCommentBox = !_showCommentBox;
                 });
               },
-              icon: const Icon(Icons.comment, size: 20),
-              label: const Text('Comment'),
             ),
-            TextButton.icon(
-              style: TextButton.styleFrom(foregroundColor: Colors.grey),
-              onPressed: () {},
-              icon: const Icon(Icons.share, size: 20),
-              label: const Text('Share'),
-            ),
+            IconButton(icon: const Icon(Icons.send_outlined), onPressed: () {}),
           ],
         ),
-      ),
-      const Divider(color: Colors.grey),
-    ],
-  );
-
-  // user info line
-  Widget userline(Userpost userpost) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: CircleAvatar(
-          backgroundImage: AssetImage(userpost.userimg),
-          radius: 25,
-        ),
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(userpost.username, style: nametxtStyle),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              Text(userpost.time),
-              const SizedBox(width: 5),
-              const Icon(Icons.group, size: 15, color: Colors.grey),
-            ],
-          ),
-        ],
-      ),
-    ],
-  );
-
-  // post content + image
-  Widget postimage(Userpost userpost) => Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: Column(
-      children: [
-        Row(children: [Text(userpost.postcontent)]),
-        const SizedBox(height: 15),
-        Container(
-          height: 350,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(userpost.postimg),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        IconButton(icon: const Icon(Icons.bookmark_border), onPressed: () {}),
       ],
     ),
   );
 
-  // comment input box
+  // Likes count
+  Widget likes(Userpost post) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Text(
+      "${post.numlikes} likes",
+      style: const TextStyle(fontWeight: FontWeight.bold),
+    ),
+  );
+
+  // Caption
+  Widget caption(Userpost post) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+    child: RichText(
+      text: TextSpan(
+        style: const TextStyle(color: Colors.black),
+        children: [
+          TextSpan(
+            text: "${post.username} ",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          TextSpan(text: post.postcontent),
+        ],
+      ),
+    ),
+  );
+
+  // Comment input box
   Widget commentInputBox() => _showCommentBox
       ? Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
           child: Row(
             children: [
               Expanded(
                 child: TextField(
                   controller: _commentController,
                   decoration: const InputDecoration(
-                    hintText: "Write a comment...",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 10,
-                    ),
+                    hintText: "Add a comment...",
+                    border: InputBorder.none,
                   ),
                 ),
               ),
@@ -224,7 +117,7 @@ class _ProfileViewState extends State<ProfileView> {
                     setState(() {
                       userdata.commentList.add(
                         Usercomment(
-                          commenterName: "You",
+                          commenterName: "Maricel Joy Alajar",
                           commenterImg: "assets/images/default_user.png",
                           commentContent: _commentController.text.trim(),
                           commentTime: "Just now",
@@ -242,28 +135,67 @@ class _ProfileViewState extends State<ProfileView> {
         )
       : const SizedBox();
 
+  // Individual comment row
+  Widget commentRow(Usercomment comment) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(
+          backgroundImage: AssetImage(comment.commenterImg),
+          radius: 15,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: "${comment.commenterName} ",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: comment.commentContent),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                comment.commentTime,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-        ),
+        title: const Text("Post"),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 1,
       ),
       body: ListView(
-        shrinkWrap: true,
         children: [
-          userline(widget.userPost),
-          postimage(widget.userPost),
-          buttons(widget.userPost),
+          postHeader(widget.userPost),
+          postImage(widget.userPost),
+          actionButtons(widget.userPost),
+          likes(widget.userPost),
+          caption(widget.userPost),
           commentInputBox(),
-          commenters(widget.userPost),
+          const Divider(),
+          // Render comments
           Column(
             children: userdata.commentList
-                .map((userComment) => userpostdetails(userComment))
+                .map((comment) => commentRow(comment))
                 .toList(),
           ),
         ],

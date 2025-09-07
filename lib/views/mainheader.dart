@@ -5,7 +5,11 @@ import '../views/editprofile.view.dart';
 class Mainheader extends StatefulWidget {
   final Userdata userdata;
 
-  const Mainheader({super.key, required this.userdata});
+  const Mainheader({
+    super.key,
+    required this.userdata,
+    required String username,
+  });
 
   @override
   State<Mainheader> createState() => _MainheaderState();
