@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:socialmedia_clone/views/postlist.dart';
 import 'package:socialmedia_clone/model/userdata.dart';
 import 'package:socialmedia_clone/views/friendlist.dart';
-import 'package:socialmedia_clone/views/infoheader.dart';
 import 'package:socialmedia_clone/views/mainheader.dart';
 
 class Socialmedia extends StatefulWidget {
@@ -27,7 +26,6 @@ class _SocialmediaState extends State<Socialmedia> {
         shrinkWrap: true,
         children: [
           Mainheader(userdata: userdata, username: ''),
-          Infoheader(userdata: userdata),
           Friendlist(userdata: userdata),
           const SizedBox(height: 20),
           Padding(

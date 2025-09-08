@@ -47,12 +47,36 @@ class Userdata {
 
   // Friend List
   List<Friend> friendList = [
-    Friend(img: "assets/images/user1.jpg", name: "John Doe"),
-    Friend(img: "assets/images/user2.jpg", name: "Jane Smith"),
-    Friend(img: "assets/images/user3.jpg", name: "Mike Johnson"),
-    Friend(img: "assets/images/user4.jpg", name: "Emily Davis"),
-    Friend(img: "assets/images/user5.jpg", name: "Chris Brown"),
-    Friend(img: "assets/images/user6.jpg", name: "Sarah Wilson"),
+    Friend(
+      img: "assets/images/user1.jpg",
+      name: "John Doe",
+      username: "johndoe",
+    ),
+    Friend(
+      img: "assets/images/user2.jpg",
+      name: "Jane Smith",
+      username: "janesmith",
+    ),
+    Friend(
+      img: "assets/images/user3.jpg",
+      name: "Mike Johnson",
+      username: "mikej",
+    ),
+    Friend(
+      img: "assets/images/user4.jpg",
+      name: "Emily Davis",
+      username: "emilyd",
+    ),
+    Friend(
+      img: "assets/images/user5.jpg",
+      name: "Chris Brown",
+      username: "chrisb",
+    ),
+    Friend(
+      img: "assets/images/user6.jpg",
+      name: "Sarah Wilson",
+      username: "sarahw",
+    ),
   ];
 
   // Account Info
