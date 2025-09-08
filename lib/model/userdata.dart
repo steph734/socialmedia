@@ -13,8 +13,8 @@ class Userdata {
       postimg: "assets/images/post1.jpg",
       numcomments: "45",
       numshare: "10",
-      numlikes: "120",
-
+      numlikes: 0,
+      isFavorited: false,
       isliked: false,
     ),
 
@@ -26,7 +26,8 @@ class Userdata {
       postimg: "assets/images/post2.jpg",
       numcomments: "30",
       numshare: "5",
-      numlikes: "85",
+      numlikes: 0,
+      isFavorited: true,
       isliked: false,
     ),
 
@@ -37,8 +38,9 @@ class Userdata {
       postcontent: "Just finished a marathon!",
       postimg: "assets/images/post3.jpg",
       numcomments: "60",
-      numlikes: '100',
+      numlikes: 0,
       numshare: "15",
+      isFavorited: false,
       isliked: false,
     ),
   ];

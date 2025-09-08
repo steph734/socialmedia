@@ -9,24 +9,38 @@ class Friendlist extends StatelessWidget {
   final Userdata userdata;
 
   final headerStyle = const TextStyle(
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: FontWeight.bold,
   );
 
-  // each friend (avatar + name)
+  // Each friend (circle avatar + name, Instagram style)
   Widget friend(Friend friend) => Column(
     children: [
-      CircleAvatar(backgroundImage: AssetImage(friend.img), radius: 40),
-      const SizedBox(height: 5),
-      Text(
-        friend.name,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontSize: 13),
+      Container(
+        padding: const EdgeInsets.all(2), // thin border like Instagram
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.grey.shade300, width: 1.5),
+        ),
+        child: CircleAvatar(
+          backgroundImage: AssetImage(friend.img),
+          radius: 35,
+        ),
+      ),
+      const SizedBox(height: 6),
+      SizedBox(
+        width: 80,
+        child: Text(
+          friend.name,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 12),
+        ),
       ),
     ],
   );
 
-  // grid of friends (3 per row, like Instagram highlights/followers preview)
+  // Grid of friends (like Instagram followers preview)
   Widget friendListGrid() => GridView.builder(
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
@@ -34,7 +48,9 @@ class Friendlist extends StatelessWidget {
       crossAxisCount: 3,
       mainAxisExtent: 120,
     ),
-    itemCount: userdata.friendList.length,
+    itemCount: userdata.friendList.length > 9
+        ? 9 // show only 9 like IG preview
+        : userdata.friendList.length,
     itemBuilder: (BuildContext ctx, index) {
       return friend(userdata.friendList[index]);
     },
@@ -51,10 +67,28 @@ class Friendlist extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Friends', style: headerStyle),
-              Text(
-                '${userdata.friendList.length}',
-                style: const TextStyle(color: Colors.grey),
+              Row(
+                children: [
+                  Text('Friends', style: headerStyle),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${userdata.friendList.length}',
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  // TODO: Navigate to full friend list page
+                },
+                child: const Text(
+                  'See all',
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ],
           ),
@@ -63,7 +97,7 @@ class Friendlist extends StatelessWidget {
         // Friends grid preview
         SizedBox(height: 280, child: friendListGrid()),
 
-        const Divider(color: Colors.grey),
+        const Divider(color: Colors.grey, height: 1),
       ],
     );
   }

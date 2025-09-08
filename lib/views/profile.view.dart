@@ -16,7 +16,6 @@ class _ProfileViewState extends State<ProfileView> {
   final TextEditingController _commentController = TextEditingController();
   bool _showCommentBox = false;
 
-  // text styles
   final nametxtStyle = const TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
@@ -30,15 +29,27 @@ class _ProfileViewState extends State<ProfileView> {
     trailing: const Icon(Icons.more_vert),
   );
 
-  // Post image
-  Widget postImage(Userpost post) => Image.asset(
-    post.postimg,
-    width: double.infinity,
-    height: 400,
-    fit: BoxFit.cover,
+  // Post image (double tap to like)
+  Widget postImage(Userpost post) => GestureDetector(
+    onDoubleTap: () {
+      setState(() {
+        // Only the current user can like/unlike
+        if (!post.isliked) {
+          post.isliked = true;
+          post.numlikes =
+              (int.parse(post.numlikes as String) + 1).toString() as int;
+        }
+      });
+    },
+    child: Image.asset(
+      post.postimg,
+      width: double.infinity,
+      height: 400,
+      fit: BoxFit.cover,
+    ),
   );
 
-  // Post action buttons
+  // Action buttons (heart, comment, share, bookmark)
   Widget actionButtons(Userpost post) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
     child: Row(
@@ -48,10 +59,25 @@ class _ProfileViewState extends State<ProfileView> {
           children: [
             IconButton(
               icon: Icon(
-                Icons.favorite,
-                color: post.isliked ? Colors.red : Colors.grey,
+                post.isliked ? Icons.favorite : Icons.favorite_border,
+                color: post.isliked ? Colors.red : Colors.black,
               ),
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  // Toggle only for the current user
+                  if (post.isliked) {
+                    post.isliked = false;
+                    post.numlikes =
+                        (int.parse(post.numlikes as String) - 1).toString()
+                            as int;
+                  } else {
+                    post.isliked = true;
+                    post.numlikes =
+                        (int.parse(post.numlikes as String) + 1).toString()
+                            as int;
+                  }
+                });
+              },
             ),
             IconButton(
               icon: const Icon(Icons.comment_outlined),
@@ -95,7 +121,7 @@ class _ProfileViewState extends State<ProfileView> {
     ),
   );
 
-  // Comment input box
+  // Comment input
   Widget commentInputBox() => _showCommentBox
       ? Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
@@ -135,7 +161,7 @@ class _ProfileViewState extends State<ProfileView> {
         )
       : const SizedBox();
 
-  // Individual comment row
+  // Render single comment
   Widget commentRow(Usercomment comment) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
     child: Row(
@@ -192,7 +218,6 @@ class _ProfileViewState extends State<ProfileView> {
           caption(widget.userPost),
           commentInputBox(),
           const Divider(),
-          // Render comments
           Column(
             children: userdata.commentList
                 .map((comment) => commentRow(comment))

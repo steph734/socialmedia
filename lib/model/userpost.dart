@@ -4,10 +4,13 @@ class Userpost {
   final String time;
   final String postcontent;
   final String postimg;
-  final String numcomments;
+  String numcomments;
   final String numshare;
-  final String numlikes;
+  int numlikes;
+  bool isFavorited;
   bool isliked;
+
+  List<String> comments;
 
   Userpost({
     required this.userimg,
@@ -18,6 +21,8 @@ class Userpost {
     required this.numcomments,
     required this.numshare,
     required this.numlikes,
+    required this.isFavorited,
     required this.isliked,
-  });
+    List<String>? comments,
+  }) : comments = comments ?? [];
 }
