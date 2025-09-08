@@ -113,7 +113,6 @@ class _MainheaderState extends State<Mainheader>
     );
   }
 
-  // 🔹 Function to add new featured story
   void _addFeaturedStory(BuildContext context) {
     String newTitle = "";
     String newImg = "assets/images/story_default.jpg"; // fallback
@@ -128,9 +127,7 @@ class _MainheaderState extends State<Mainheader>
               labelText: "Story Title",
               border: OutlineInputBorder(),
             ),
-            onChanged: (value) {
-              newTitle = value;
-            },
+            onChanged: (value) => newTitle = value,
           ),
           actions: [
             TextButton(
@@ -143,7 +140,7 @@ class _MainheaderState extends State<Mainheader>
                   setState(() {
                     featuredStories.add({
                       "title": newTitle,
-                      "images": [newImg], // ✅ wrap in list
+                      "images": [newImg],
                     });
                   });
                 }
@@ -157,17 +154,37 @@ class _MainheaderState extends State<Mainheader>
     );
   }
 
+  BoxDecoration igStoryDecoration() {
+    return const BoxDecoration(
+      shape: BoxShape.circle,
+      gradient: SweepGradient(
+        colors: [
+          Color(0xFFfeda75),
+          Color(0xFFfa7e1e),
+          Color(0xFFd62976),
+          Color(0xFF962fbf),
+          Color(0xFF4f5bd5),
+          Color(0xFFfeda75),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// 🔹 Profile picture + Stats
+        /// Profile picture + Stats
         Row(
           children: [
-            CircleAvatar(
-              backgroundImage: AssetImage(userdata.myUserAccount.img),
-              radius: 45,
+            Container(
+              padding: const EdgeInsets.all(3),
+              decoration: igStoryDecoration(),
+              child: CircleAvatar(
+                backgroundImage: AssetImage(userdata.myUserAccount.img),
+                radius: 45,
+              ),
             ),
             const SizedBox(width: 30),
             Expanded(
@@ -209,7 +226,7 @@ class _MainheaderState extends State<Mainheader>
 
         const SizedBox(height: 12),
 
-        /// 🔹 Name
+        /// Name + Bio
         Text(
           userdata.myUserAccount.name,
           style: const TextStyle(
@@ -218,10 +235,7 @@ class _MainheaderState extends State<Mainheader>
             color: Colors.black,
           ),
         ),
-
         const SizedBox(height: 4),
-
-        /// 🔹 Bio / Email
         Text(
           userdata.myUserAccount.email,
           style: const TextStyle(fontSize: 14, color: Colors.black87),
@@ -229,7 +243,7 @@ class _MainheaderState extends State<Mainheader>
 
         const SizedBox(height: 12),
 
-        /// 🔹 Buttons Row
+        /// Buttons
         Row(
           children: [
             Expanded(
@@ -241,11 +255,8 @@ class _MainheaderState extends State<Mainheader>
                       builder: (context) => EditProfileView(userdata: userdata),
                     ),
                   );
-
                   if (updatedUserdata != null) {
-                    setState(() {
-                      userdata = updatedUserdata;
-                    });
+                    setState(() => userdata = updatedUserdata);
                   }
                 },
                 style: OutlinedButton.styleFrom(
@@ -275,12 +286,12 @@ class _MainheaderState extends State<Mainheader>
 
         const SizedBox(height: 16),
 
-        /// 🔹 Featured Stories (Instagram Highlights)
+        /// Featured Stories (Highlights)
         SizedBox(
           height: 95,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: featuredStories.length + 1, // +1 for "New" story
+            itemCount: featuredStories.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return Padding(
@@ -301,26 +312,53 @@ class _MainheaderState extends State<Mainheader>
                   ),
                 );
               }
+
               final story = featuredStories[index - 1];
+
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Column(
                   children: [
                     GestureDetector(
                       onTap: () {
+                        // Build all FeaturedStoryView objects
+                        final allStories = List.generate(
+                          featuredStories.length,
+                          (i) => FeaturedStoryView(
+                            title: featuredStories[i]["title"],
+                            images: List<String>.from(
+                              featuredStories[i]["images"],
+                            ),
+                            storyIndex: i,
+                            allStories: [],
+                          ),
+                        );
+
+                        // Link them together
+                        for (int i = 0; i < allStories.length; i++) {
+                          allStories[i] = FeaturedStoryView(
+                            title: allStories[i].title,
+                            images: allStories[i].images,
+                            storyIndex: i,
+                            allStories: allStories,
+                          );
+                        }
+
+                        // Open tapped story
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => FeaturedStoryView(
-                              title: story["title"],
-                              images: List<String>.from(story["images"]),
-                            ),
+                            builder: (_) => allStories[index - 1],
                           ),
                         );
                       },
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: AssetImage(story["images"][0]),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: igStoryDecoration(),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: AssetImage(story["images"][0]),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -335,7 +373,7 @@ class _MainheaderState extends State<Mainheader>
         const SizedBox(height: 10),
         const Divider(thickness: 0.5, color: Colors.grey),
 
-        /// 🔹 Tabs (Posts, Reels, Tagged)
+        /// Tabs
         TabBar(
           controller: _tabController,
           indicatorColor: Colors.black,
@@ -348,13 +386,12 @@ class _MainheaderState extends State<Mainheader>
           ],
         ),
 
-        /// 🔹 Tab Views
+        /// Tab Views
         SizedBox(
           height: 400,
           child: TabBarView(
             controller: _tabController,
             children: [
-              /// Posts grid
               GridView.builder(
                 padding: const EdgeInsets.all(2),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -389,11 +426,7 @@ class _MainheaderState extends State<Mainheader>
                   );
                 },
               ),
-
-              /// Reels screen
               ReelsView(),
-
-              /// Tagged placeholder
               const Center(child: Text("Tagged posts go here")),
             ],
           ),
